@@ -4,7 +4,7 @@ A Python package for sending exception logs and custom messages to the HuntGlitc
 
 ## 📦 Installation
 
-### Option 1: Install from PyPI (if published)
+### Option 1: Install from PyPI
 ```bash
 pip install huntglitch-python
 ```
