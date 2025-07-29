@@ -12,7 +12,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/huntglitch-npm/huntglitch-python',
-    author='ITPath Solutions',
+    author='IT Path Solutions',
     author_email='support@itpathsolutions.com',
     classifiers=[
         'Development Status :: 5 - Production/Stable',

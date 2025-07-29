@@ -9,10 +9,10 @@ description = "Send Python exceptions and logs to HuntGlitch Lighthouse API"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "ITPath Solutions", email = "support@itpathsolutions.com"}
+    {name = "IT Path Solutions", email = "support@itpathsolutions.com"}
 ]
 maintainers = [
-    {name = "ITPath Solutions", email = "support@itpathsolutions.com"}
+    {name = "IT Path Solutions", email = "support@itpathsolutions.com"}
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
