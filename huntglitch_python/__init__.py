@@ -6,9 +6,9 @@ A Python package for sending exception logs and custom messages to the HuntGlitc
 
 from .logger import HuntGlitchLogger, send_huntglitch_log, capture_exception_and_report
 
-__version__ = "1.0.1"
-__author__ = "IT Path Solutions"
-__email__ = "support@itpathsolutions.com"
+__version__ = "1.0.0"
+__author__ = "HuntGlitch"
+__email__ = "support@huntglitch.com"
 
 # For backward compatibility
 __all__ = [

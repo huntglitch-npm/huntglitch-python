@@ -7,13 +7,13 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name='huntglitch-python',
-    version='1.0.1',
+    version='1.0.0',
     description='Send Python exceptions and logs to HuntGlitch Lighthouse API',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/huntglitch-npm/huntglitch-python',
-    author='IT Path Solutions',
-    author_email='support@itpathsolutions.com',
+    author='HuntGlitch',
+    author_email='support@huntglitch.com',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',

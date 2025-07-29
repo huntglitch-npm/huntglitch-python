@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "huntglitch-python"
-version = "1.0.1"
+version = "1.0.0"
 description = "Send Python exceptions and logs to HuntGlitch Lighthouse API"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "IT Path Solutions", email = "support@itpathsolutions.com"}
+    {name = "HuntGlitch", email = "support@huntglitch.com"}
 ]
 maintainers = [
-    {name = "IT Path Solutions", email = "support@itpathsolutions.com"}
+    {name = "HuntGlitch", email = "support@huntglitch.com"}
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
