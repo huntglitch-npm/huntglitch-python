@@ -6,9 +6,11 @@ in different scenarios and frameworks.
 """
 
 import os
-from huntglitch_python import HuntGlitchLogger, send_huntglitch_log, capture_exception_and_report
+from huntglitch_python import HuntGlitchLogger, capture_exception_and_report
 
 # Example 1: Basic usage with environment variables
+
+
 def basic_usage_example():
     """
     Basic usage assuming environment variables are set.
@@ -16,7 +18,7 @@ def basic_usage_example():
     """
     try:
         # This will cause a division by zero error
-        result = 10 / 0
+        10 / 0
     except Exception:
         # Simple exception capture and report
         capture_exception_and_report()
@@ -36,7 +38,7 @@ def explicit_config_example():
         retries=2,   # Custom retry count
         silent_failures=True  # Don't raise exceptions on API failures
     )
-    
+
     try:
         # Simulate an error
         raise ValueError("This is a test error")
@@ -48,7 +50,7 @@ def explicit_config_example():
             },
             tags={"environment": "production", "severity": "high"}
         )
-        
+
         if success:
             print("Exception logged successfully")
         else:
@@ -65,7 +67,7 @@ def manual_logging_example():
         project_key=os.getenv("PROJECT_KEY"),
         deliverable_key=os.getenv("DELIVERABLE_KEY")
     )
-    
+
     # Log a custom event
     logger.send_log(
         error_name="CustomEvent",
@@ -89,7 +91,7 @@ def error_logging_decorator(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except Exception as e:
+        except Exception:
             # Log the exception
             capture_exception_and_report(
                 additional_data={
@@ -121,15 +123,15 @@ def flask_integration_example():
     except ImportError:
         print("Flask not installed - skipping Flask example")
         return
-    
+
     app = Flask(__name__)
-    
+
     # Initialize logger
     logger = HuntGlitchLogger(
         project_key=os.getenv("PROJECT_KEY"),
         deliverable_key=os.getenv("DELIVERABLE_KEY")
     )
-    
+
     @app.errorhandler(Exception)
     def handle_exception(e):
         """Global exception handler for Flask."""
@@ -142,19 +144,19 @@ def flask_integration_example():
             }
         )
         return "Internal Server Error", 500
-    
+
     @app.route("/test-error")
     def test_error():
         """Route that intentionally causes an error."""
         raise RuntimeError("This is a test error")
-    
+
     return app
 
 
 # Example 6: Context manager for error logging
 class ErrorLoggingContext:
     """Context manager for automatic error logging."""
-    
+
     def __init__(self, operation_name, **extra_data):
         self.operation_name = operation_name
         self.extra_data = extra_data
@@ -162,10 +164,10 @@ class ErrorLoggingContext:
             project_key=os.getenv("PROJECT_KEY"),
             deliverable_key=os.getenv("DELIVERABLE_KEY")
         )
-    
+
     def __enter__(self):
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is not None:
             self.logger.capture_exception(
@@ -191,12 +193,12 @@ async def async_example():
     The logger itself is not async, but can be used in async contexts.
     """
     import asyncio
-    
+
     logger = HuntGlitchLogger(
         project_key=os.getenv("PROJECT_KEY"),
         deliverable_key=os.getenv("DELIVERABLE_KEY")
     )
-    
+
     try:
         # Simulate async operation
         await asyncio.sleep(1)
@@ -216,14 +218,14 @@ def configuration_example():
     """
     try:
         # This will raise ConfigurationError if env vars are not set
-        logger = HuntGlitchLogger()
+        HuntGlitchLogger()
         print("Logger configured successfully")
     except Exception as e:
         print(f"Configuration error: {e}")
         print("Please set PROJECT_KEY and DELIVERABLE_KEY environment variables")
-        
+
         # Alternative: provide config explicitly
-        logger = HuntGlitchLogger(
+        HuntGlitchLogger(
             project_key="your-project-key",
             deliverable_key="your-deliverable-key",
             silent_failures=True  # Don't raise on API errors
@@ -237,33 +239,33 @@ if __name__ == "__main__":
     """
     print("HuntGlitch Logger Examples")
     print("=" * 40)
-    
+
     # Check if configuration is available
     if not (os.getenv("PROJECT_KEY") and os.getenv("DELIVERABLE_KEY")):
         print("Warning: PROJECT_KEY and DELIVERABLE_KEY not set in environment")
         print("Some examples may not work correctly")
-    
+
     # Run examples
     print("\n1. Configuration example:")
     configuration_example()
-    
+
     print("\n2. Manual logging example:")
     try:
         manual_logging_example()
         print("Manual log sent successfully")
     except Exception as e:
         print(f"Manual logging failed: {e}")
-    
+
     print("\n3. Decorator example:")
     try:
         risky_function("")  # This will cause an error
     except ValueError as e:
         print(f"Function failed as expected: {e}")
-    
+
     print("\n4. Context manager example:")
     try:
         context_manager_example()
     except RuntimeError as e:
         print(f"Context manager caught error: {e}")
-    
+
     print("\nExamples completed!")

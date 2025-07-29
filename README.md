@@ -105,12 +105,15 @@ def example_function():
         )
         if success:
             print("Error logged successfully")
+
+
+example_function()
 ```
 
 ### Method 2: Simple Function API (Backward Compatible)
 
 ```python
-from huntglitch_python import send_huntglitch_log, capture_exception_and_report
+from huntglitch_python import capture_exception_and_report
 
 def example_function():
     try:
@@ -119,6 +122,9 @@ def example_function():
     except Exception:
         # Capture and report the exception
         capture_exception_and_report()
+
+
+example_function()
 ```
 
 ### Manual Exception Logging
