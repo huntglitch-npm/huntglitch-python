@@ -24,7 +24,7 @@ HUNTGLITCH_URL = "https://api.huntglitch.com/add-log"
 # Log types mapping
 LOG_TYPES = {
     'debug': 1,
-    'info': 2, 
+    'info': 2,
     'notice': 3,
     'warning': 4,
     'error': 5
@@ -54,7 +54,7 @@ class HuntGlitchLogger:
     Production-ready HuntGlitch logger with configuration management,
     error handling, and retry logic.
     """
-    
+
     def __init__(
         self,
         project_key: Optional[str] = None,
@@ -67,7 +67,7 @@ class HuntGlitchLogger:
     ):
         """
         Initialize HuntGlitch logger.
-        
+
         Args:
             project_key: Project key (overrides env var)
             deliverable_key: Deliverable key (overrides env var)
@@ -81,18 +81,18 @@ class HuntGlitchLogger:
         self.retries = retries
         self.retry_delay = retry_delay
         self.silent_failures = silent_failures
-        
+
         # Load environment variables if requested and available
         if load_env and DOTENV_AVAILABLE:
             self._load_env_files()
-        
+
         # Set configuration
         self.project_key = project_key or os.getenv("PROJECT_KEY") or os.getenv("HUNTGLITCH_PROJECT_KEY")
         self.deliverable_key = deliverable_key or os.getenv("DELIVERABLE_KEY") or os.getenv("HUNTGLITCH_DELIVERABLE_KEY")
-        
+
         # Validate configuration
         self._validate_config()
-    
+
     def _load_env_files(self):
         """Load environment variables from various .env file locations."""
         env_files = [
@@ -102,7 +102,7 @@ class HuntGlitchLogger:
             Path.cwd() / '.env.local',
             Path.home() / '.huntglitch.env'
         ]
-        
+
         for env_file in env_files:
             if isinstance(env_file, str):
                 env_file = Path(env_file)
@@ -110,7 +110,7 @@ class HuntGlitchLogger:
                 load_dotenv(env_file)
                 logger.debug(f"Loaded environment from {env_file}")
                 break
-    
+
     def _validate_config(self):
         """Validate configuration."""
         if not self.project_key:
@@ -121,7 +121,7 @@ class HuntGlitchLogger:
             raise ConfigurationError(
                 "DELIVERABLE_KEY is required. Set it via environment variable or constructor parameter."
             )
-    
+
     def _prepare_error_data(
         self,
         error_name: str,
@@ -139,7 +139,7 @@ class HuntGlitchLogger:
             "g": error_code,
             "h": str(error_name),
         }
-    
+
     def _prepare_log_data(
         self,
         error_data: Dict[str, Any],
@@ -161,7 +161,7 @@ class HuntGlitchLogger:
             "n": request_method,
             "timestamp": datetime.utcnow().isoformat(),
         }
-    
+
     def _prepare_payload(
         self,
         log_data: Dict[str, Any],
@@ -172,7 +172,7 @@ class HuntGlitchLogger:
         # Convert string log type to int
         if isinstance(log_type, str):
             log_type = LOG_TYPES.get(log_type.lower(), 5)
-        
+
         return {
             "vp": self.project_key,
             "vd": self.deliverable_key,
@@ -180,11 +180,11 @@ class HuntGlitchLogger:
             "a": json.dumps(log_data, default=str),  # Handle datetime serialization
             "r": ip_address,
         }
-    
+
     def _make_request(self, payload: Dict[str, Any]) -> Optional[requests.Response]:
         """Make HTTP request with retry logic."""
         headers = {"Content-Type": "application/json"}
-        
+
         for attempt in range(self.retries + 1):
             try:
                 response = requests.post(
@@ -195,7 +195,7 @@ class HuntGlitchLogger:
                 )
                 response.raise_for_status()
                 return response
-                
+
             except requests.exceptions.RequestException as e:
                 if attempt == self.retries:
                     # Last attempt failed
@@ -209,9 +209,9 @@ class HuntGlitchLogger:
                     # Retry with delay
                     time.sleep(self.retry_delay * (2 ** attempt))  # Exponential backoff
                     logger.warning(f"Request failed, retrying... (attempt {attempt + 1}/{self.retries + 1})")
-        
+
         return None
-    
+
     def send_log(
         self,
         error_name: str,
@@ -231,7 +231,7 @@ class HuntGlitchLogger:
     ) -> bool:
         """
         Send a log entry to HuntGlitch.
-        
+
         Returns:
             bool: True if successful, False if failed (when silent_failures=True)
         """
@@ -239,17 +239,17 @@ class HuntGlitchLogger:
             error_data = self._prepare_error_data(
                 error_name, error_value, file_name, line_number, error_code
             )
-            
+
             log_data = self._prepare_log_data(
                 error_data, additional_data, tags, request_headers,
                 request_body, request_url, request_method
             )
-            
+
             payload = self._prepare_payload(log_data, log_type, ip_address)
-            
+
             response = self._make_request(payload)
             return response is not None
-            
+
         except Exception as e:
             error_msg = f"Unexpected error in send_log: {e}"
             if self.silent_failures:
@@ -257,28 +257,28 @@ class HuntGlitchLogger:
                 return False
             else:
                 raise HuntGlitchError(error_msg) from e
-    
+
     def capture_exception(self, **kwargs) -> bool:
         """
         Capture current exception and send to HuntGlitch.
-        
+
         Returns:
             bool: True if successful, False if failed
         """
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        
+
         if exc_type is None:
             if not self.silent_failures:
                 raise HuntGlitchError("No active exception to capture")
             logger.warning("No active exception to capture")
             return False
-        
+
         try:
             # Get the last frame from traceback
             tb_frame = traceback.extract_tb(exc_traceback)[-1]
             file_name = tb_frame.filename
             line_number = tb_frame.lineno
-            
+
             return self.send_log(
                 error_name=exc_type.__name__,
                 error_value=str(exc_value),
@@ -325,7 +325,7 @@ def send_huntglitch_log(
 ) -> bool:
     """
     Send a log entry to HuntGlitch using the default logger.
-    
+
     This function maintains backward compatibility with the original API.
     """
     logger_instance = _get_default_logger()
@@ -349,7 +349,7 @@ def send_huntglitch_log(
 def capture_exception_and_report(**kwargs) -> bool:
     """
     Capture current exception and report using the default logger.
-    
+
     This function maintains backward compatibility with the original API.
     """
     logger_instance = _get_default_logger()

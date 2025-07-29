@@ -13,6 +13,6 @@ __email__ = "support@itpathsolutions.com"
 # For backward compatibility
 __all__ = [
     "HuntGlitchLogger",
-    "send_huntglitch_log", 
+    "send_huntglitch_log",
     "capture_exception_and_report"
 ]
