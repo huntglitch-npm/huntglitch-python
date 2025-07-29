@@ -7,7 +7,7 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 setup(
     name='huntglitch-python',
-    version='1.0.0',
+    version='1.0.1',
     description='Send Python exceptions and logs to HuntGlitch Lighthouse API',
     long_description=long_description,
     long_description_content_type="text/markdown",
