@@ -19,7 +19,7 @@ except ImportError:
 DEFAULT_TIMEOUT = 10
 DEFAULT_RETRIES = 3
 DEFAULT_RETRY_DELAY = 1.0
-HUNTGLITCH_URL = "https://lighthouse-api.itpathsolutions.com/add-log"
+HUNTGLITCH_URL = "https://api.huntglitch.com/add-log"
 
 # Log types mapping
 LOG_TYPES = {
@@ -59,7 +59,6 @@ class HuntGlitchLogger:
         self,
         project_key: Optional[str] = None,
         deliverable_key: Optional[str] = None,
-        api_url: Optional[str] = None,
         timeout: int = DEFAULT_TIMEOUT,
         retries: int = DEFAULT_RETRIES,
         retry_delay: float = DEFAULT_RETRY_DELAY,
@@ -72,7 +71,6 @@ class HuntGlitchLogger:
         Args:
             project_key: Project key (overrides env var)
             deliverable_key: Deliverable key (overrides env var)
-            api_url: API URL (overrides default)
             timeout: Request timeout in seconds
             retries: Number of retry attempts
             retry_delay: Delay between retries in seconds
@@ -83,7 +81,6 @@ class HuntGlitchLogger:
         self.retries = retries
         self.retry_delay = retry_delay
         self.silent_failures = silent_failures
-        self.api_url = api_url or HUNTGLITCH_URL
         
         # Load environment variables if requested and available
         if load_env and DOTENV_AVAILABLE:
@@ -191,7 +188,7 @@ class HuntGlitchLogger:
         for attempt in range(self.retries + 1):
             try:
                 response = requests.post(
-                    self.api_url,
+                    HUNTGLITCH_URL,
                     data=json.dumps(payload),
                     headers=headers,
                     timeout=self.timeout
