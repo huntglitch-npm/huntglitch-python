@@ -1,6 +1,6 @@
 # HuntGlitch Python Logger
 
-A Python package for sending exception logs and custom messages to the HuntGlitch Lighthouse API. This package provides an easy way to integrate error tracking and logging into your Python applications.
+A Python package for sending exception logs and custom messages to the HuntGlitch. This package provides an easy way to integrate error tracking and logging into your Python applications.
 
 ## 📦 Installation
 
