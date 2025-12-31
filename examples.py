@@ -8,9 +8,8 @@ in different scenarios and frameworks.
 import os
 from huntglitch_python import HuntGlitchLogger, capture_exception_and_report
 
+
 # Example 1: Basic usage with environment variables
-
-
 def basic_usage_example():
     """
     Basic usage assuming environment variables are set.
