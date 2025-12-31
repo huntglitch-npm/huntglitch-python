@@ -20,7 +20,7 @@ class Config:
     PROJECT_KEY_VARS = ["PROJECT_KEY", "HUNTGLITCH_PROJECT_KEY"]
     DELIVERABLE_KEY_VARS = ["DELIVERABLE_KEY", "HUNTGLITCH_DELIVERABLE_KEY"]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.project_key: Optional[str] = None
         self.deliverable_key: Optional[str] = None
         self._load_config()

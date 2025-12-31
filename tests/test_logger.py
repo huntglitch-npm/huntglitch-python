@@ -4,6 +4,7 @@ Tests for HuntGlitch Python Logger
 
 import os
 import pytest
+import requests
 from unittest.mock import Mock, patch
 
 from huntglitch_python.logger import (
@@ -59,7 +60,7 @@ class TestHuntGlitchLogger:
             payload = logger._prepare_payload({}, log_type_str)
             assert payload['o'] == expected_int
 
-    @patch('huntglitch_python.logger.requests.post')
+    @patch('huntglitch_python.client.requests.Session.post')
     def test_successful_log_send(self, mock_post):
         """Test successful log sending."""
         mock_response = Mock()
@@ -82,12 +83,12 @@ class TestHuntGlitchLogger:
         assert result is True
         assert mock_post.called
 
-    @patch('huntglitch_python.logger.requests.post')
+    @patch('huntglitch_python.client.requests.Session.post')
     def test_retry_logic(self, mock_post):
         """Test retry logic on failed requests."""
         # Mock first call to fail, second to succeed
         mock_response_fail = Mock()
-        mock_response_fail.raise_for_status.side_effect = Exception("Network error")
+        mock_response_fail.raise_for_status.side_effect = requests.exceptions.RequestException("Network error")
 
         mock_response_success = Mock()
         mock_response_success.raise_for_status.return_value = None
@@ -115,10 +116,10 @@ class TestHuntGlitchLogger:
         assert result is True
         assert mock_post.call_count == 2
 
-    @patch('huntglitch_python.logger.requests.post')
+    @patch('huntglitch_python.client.requests.Session.post')
     def test_silent_failure_mode(self, mock_post):
         """Test silent failure mode."""
-        mock_post.side_effect = Exception("Network error")
+        mock_post.side_effect = requests.exceptions.RequestException("Network error")
 
         logger = HuntGlitchLogger(
             project_key=self.project_key,
@@ -137,10 +138,10 @@ class TestHuntGlitchLogger:
 
         assert result is False  # Should return False instead of raising
 
-    @patch('huntglitch_python.logger.requests.post')
+    @patch('huntglitch_python.client.requests.Session.post')
     def test_non_silent_failure_mode(self, mock_post):
         """Test non-silent failure mode."""
-        mock_post.side_effect = Exception("Network error")
+        mock_post.side_effect = requests.exceptions.RequestException("Network error")
 
         logger = HuntGlitchLogger(
             project_key=self.project_key,
@@ -170,7 +171,7 @@ class TestHuntGlitchLogger:
         result = logger.capture_exception()
         assert result is False
 
-    @patch('huntglitch_python.logger.requests.post')
+    @patch('huntglitch_python.client.requests.Session.post')
     def test_capture_exception_with_active_exception(self, mock_post):
         """Test capturing active exception."""
         mock_response = Mock()
@@ -196,7 +197,7 @@ class TestBackwardCompatibility:
     """Test backward compatibility functions."""
 
     @patch.dict(os.environ, {'PROJECT_KEY': 'test-project', 'DELIVERABLE_KEY': 'test-deliverable'})
-    @patch('huntglitch_python.logger.requests.post')
+    @patch('huntglitch_python.client.requests.Session.post')
     def test_send_huntglitch_log_function(self, mock_post):
         """Test the backward compatibility function."""
         mock_response = Mock()
@@ -214,7 +215,7 @@ class TestBackwardCompatibility:
         assert mock_post.called
 
     @patch.dict(os.environ, {'PROJECT_KEY': 'test-project', 'DELIVERABLE_KEY': 'test-deliverable'})
-    @patch('huntglitch_python.logger.requests.post')
+    @patch('huntglitch_python.client.requests.Session.post')
     def test_capture_exception_and_report_function(self, mock_post):
         """Test the backward compatibility exception capture function."""
         mock_response = Mock()
